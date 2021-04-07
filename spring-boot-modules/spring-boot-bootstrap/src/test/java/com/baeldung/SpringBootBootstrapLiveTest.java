@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,6 +69,8 @@ public class SpringBootBootstrapLiveTest {
         assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
     }
 
+    // TODO: https://github.com/quarkusio/quarkus/issues/16321
+    @Disabled
     @Test
     public void whenInvalidBook_thenError() {
         final Book book = createRandomBook();
