@@ -1,12 +1,16 @@
 package com.baeldung.persistence.repo;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
 
 import com.baeldung.persistence.model.Book;
 
-import java.util.List;
-import java.util.Optional;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
-public interface BookRepository extends CrudRepository<Book, Long> {
-    List<Book> findByTitle(String title);
+@ApplicationScoped
+public class BookRepository implements PanacheRepository<Book> {
+    public List<Book> findByTitle(String title) {
+        return list("title", title);
+    }
 }

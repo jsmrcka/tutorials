@@ -1,19 +1,26 @@
 package com.baeldung.web;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import javax.inject.Inject;
+import javax.ws.rs.core.MediaType;
 
-@Controller
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.quarkus.qute.Template;
+import io.quarkus.qute.TemplateInstance;
+
+@RestController
 public class SimpleController {
 
     @Value("${spring.application.name}")
     String appName;
 
-    @RequestMapping("/")
-    public String homePage(Model model) {
-        model.addAttribute("appName", appName);
-        return "home";
+    @Inject
+    Template home;
+
+    @RequestMapping(value = "/", produces = MediaType.TEXT_HTML)
+    public TemplateInstance homePage() {
+        return home.data("appName", appName);
     }
 }

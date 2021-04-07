@@ -2,23 +2,25 @@ package com.baeldung;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.baeldung.persistence.model.Book;
 
+import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
+@QuarkusTest
 public class SpringBootBootstrapLiveTest {
 
-    private static final String API_ROOT = "http://localhost:8080/api/books";
+    private static final String API_ROOT = "/api/books";
 
     @Test
     public void whenGetAllBooks_thenOK() {
@@ -104,7 +106,7 @@ public class SpringBootBootstrapLiveTest {
         final String location = createBookAsUri(book);
 
         Response response = RestAssured.delete(location);
-        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatusCode());
 
         response = RestAssured.get(location);
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
