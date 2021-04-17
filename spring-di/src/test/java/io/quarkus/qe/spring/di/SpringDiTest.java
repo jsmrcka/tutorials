@@ -17,7 +17,7 @@ import io.quarkus.arc.InjectableBean;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-public class SpringUnitTest {
+public class SpringDiTest {
 
     private static Stream<Class<?>> beanClassProvider() {
         return Stream.of(
