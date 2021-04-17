@@ -3,11 +3,14 @@ package com.baeldung.di.spring;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.enterprise.inject.Any;
+import java.util.stream.Stream;
+
 import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.util.AnnotationLiteral;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import io.quarkus.arc.Arc;
 import io.quarkus.test.junit.QuarkusTest;
@@ -15,36 +18,39 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 public class SpringUnitTest {
 
+    private static Stream<Class<?>> beanClassProvider() {
+        return Stream.of(
+                Account.class,
+                AccountService.class,
+                AudioBookService.class,
+                BookService.class,
+                PersonDao.class,
+                SpringPersonService.class,
+                UserService.class);
+    }
+
+    private static Stream<Arguments> beanNameAndClassProvider() {
+        return Stream.of(
+                Arguments.of("account", Account.class),
+                Arguments.of("accountServiceImpl", AccountService.class),
+                Arguments.of("audioBookServiceGenerator", AudioBookService.class),
+                Arguments.of("bookServiceGenerator", BookService.class),
+                Arguments.of("personDaoImpl", PersonDao.class),
+                Arguments.of("springPersonService", SpringPersonService.class),
+                Arguments.of("userService", UserService.class));
+    }
+
+    @ParameterizedTest
+    @MethodSource("beanClassProvider")
+    public void beanExists(Class<?> beanClass) {
+        final Object bean = CDI.current().select(beanClass).get();
+        assertNotNull(bean);
+    }
+
     @Test
     public void givenAccountServiceAutowiredToUserService_WhenGetAccountServiceInvoked_ThenReturnValueIsNotNull() {
         UserService userService = CDI.current().select(UserService.class).get();
         assertNotNull(userService.getAccountService());
-    }
-
-    @Test
-    public void givenBookServiceIsRegisteredAsBeanInContext_WhenBookServiceIsRetrievedFromContext_ThenReturnValueIsNotNull() {
-        BookService bookService = CDI.current().select(BookService.class).get();
-        assertNotNull(bookService);
-    }
-
-    @Test
-    public void givenBookServiceIsRegisteredAsBeanInContextByOverridingAudioBookService_WhenAudioBookServiceIsRetrievedFromContext_ThenNoSuchBeanDefinitionExceptionIsThrown() {
-        BookService bookService = CDI.current().select(BookService.class).get();
-        assertNotNull(bookService);
-        AudioBookService audioBookService = CDI.current().select(AudioBookService.class).get();
-        assertNotNull(audioBookService);
-    }
-
-    @Test
-    public void givenAuthorServiceAutowiredToBookServiceAsOptionalDependency_WhenBookServiceIsRetrievedFromContext_ThenNoSuchBeanDefinitionExceptionIsNotThrown() {
-        BookService bookService = CDI.current().select(BookService.class).get();
-        assertNotNull(bookService);
-    }
-
-    @Test
-    public void givenSpringPersonServiceConstructorAnnotatedByAutowired_WhenSpringPersonServiceIsRetrievedFromContext_ThenInstanceWillBeCreatedFromTheConstructor() {
-        SpringPersonService personService = CDI.current().select(SpringPersonService.class).get();
-        assertNotNull(personService);
     }
 
     @Test
@@ -54,34 +60,34 @@ public class SpringUnitTest {
         assertNotNull(personService.getPersonDao());
     }
 
-    @Test
-    public void cdiAndArcWayReturnTheSameBean() {
-        SpringPersonService personService1 = CDI.current().select(SpringPersonService.class).get();
-        SpringPersonService personService2 = Arc.container().select(SpringPersonService.class).get();
-        assertNotNull(personService1);
-        assertNotNull(personService2);
-        assertEquals(personService1, personService2);
+    @ParameterizedTest
+    @MethodSource("beanClassProvider")
+    public void cdiAndArcWayReturnTheSameBean(Class<?> beanClass) {
+        Object bean1 = CDI.current().select(beanClass).get();
+        Object bean2 = Arc.container().select(beanClass).get();
+        assertNotNull(bean1);
+        assertNotNull(bean2);
+        assertEquals(bean1, bean2);
     }
 
-    @Test
-    public void cdiAndArcInstanceWayReturnTheSameBean() {
-        SpringPersonService personService1 = CDI.current().select(SpringPersonService.class).get();
-        SpringPersonService personService2 = Arc.container().instance(SpringPersonService.class).get();
-        assertNotNull(personService1);
-        assertNotNull(personService2);
-        assertEquals(personService1, personService2);
+    @ParameterizedTest
+    @MethodSource("beanClassProvider")
+    public void cdiAndArcInstanceWayReturnTheSameBean(Class<?> beanClass) {
+        Object bean1 = CDI.current().select(beanClass).get();
+        Object bean2 = Arc.container().instance(beanClass).get();
+        assertNotNull(bean1);
+        assertNotNull(bean2);
+        assertEquals(bean1, bean2);
     }
 
-    @Test
-    public void cdiAndArcStringWayReturnTheSameBean() {
-        Arc.container().beanManager().getBeans(Object.class, new AnnotationLiteral<Any>() {})
-                .forEach(bean -> System.out.println(bean.getName() + " - " + bean.getBeanClass().getName()));
-
-        SpringPersonService personService1 = CDI.current().select(SpringPersonService.class).get();
-        SpringPersonService personService2 = (SpringPersonService) Arc.container().instance("springPersonService").get();
-        assertNotNull(personService1);
-        assertNotNull(personService2);
-        assertEquals(personService1, personService2);
+    @ParameterizedTest
+    @MethodSource("beanNameAndClassProvider")
+    public void cdiAndArcStringWayReturnTheSameBean(String beanName, Class<?> beanClass) {
+        Object bean1 = CDI.current().select(beanClass).get();
+        Object bean2 = Arc.container().instance(beanName).get();
+        assertNotNull(bean1);
+        assertNotNull(bean2);
+        assertEquals(bean1, bean2);
     }
 
 }
