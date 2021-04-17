@@ -1,4 +1,4 @@
-package com.baeldung.di.spring;
+package io.quarkus.qe.spring.di;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

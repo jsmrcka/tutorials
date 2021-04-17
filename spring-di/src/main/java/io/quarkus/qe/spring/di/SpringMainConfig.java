@@ -1,4 +1,4 @@
-package com.baeldung.di.spring;
+package io.quarkus.qe.spring.di;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

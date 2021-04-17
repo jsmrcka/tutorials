@@ -1,4 +1,4 @@
-package com.baeldung.di.spring;
+package io.quarkus.qe.spring.di;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
