@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import io.quarkus.arc.Arc;
+import io.quarkus.arc.InjectableBean;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
@@ -90,4 +91,14 @@ public class SpringUnitTest {
         assertEquals(bean1, bean2);
     }
 
+    @Test
+    public void beanDeclaringClassMatch() {
+        final InjectableBean<Object> audioBookServiceGenerator = Arc.container().instance("audioBookServiceGenerator")
+                .getBean();
+        final InjectableBean<Object> bookServiceGenerator = Arc.container().instance("bookServiceGenerator").getBean();
+        assertNotNull(audioBookServiceGenerator);
+        assertNotNull(bookServiceGenerator);
+        assertEquals(SpringBeansConfig.class, audioBookServiceGenerator.getBeanClass());
+        assertEquals(SpringMainConfig.class, bookServiceGenerator.getBeanClass());
+    }
 }
