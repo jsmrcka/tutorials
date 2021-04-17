@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class SpringPersonService {
 
     @Autowired
-    private PersonDao personDao;
+    PersonDao personDao;
 
     public PersonDao getPersonDao() {
         return personDao;

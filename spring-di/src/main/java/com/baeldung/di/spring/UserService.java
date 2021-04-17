@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class UserService {
 
 	@Autowired
-	private AccountService accountService;
+	AccountService accountService;
 
 	public AccountService getAccountService() {
 		return accountService;
